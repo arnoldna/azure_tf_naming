@@ -256,6 +256,11 @@ output "resource_group" {
   value       = local.names.resource_group
 }
 
+output "subscription_name" {
+  description = "Name for Subscription"
+  value       = local.names.subscription_name
+}
+
 output "log_analytics_workspace" {
   description = "Name for Log Analytics Workspace"
   value       = local.names.log_analytics_workspace

@@ -234,6 +234,7 @@ locals {
     log_analytics_workspace       = "log"
     log_analytics_query_pack      = "pack"
     management_group              = "mg"
+    subscription_name             = "sub"
     purview                       = "pview"
     resource_group                = "rg"
     template_spec                 = "ts"

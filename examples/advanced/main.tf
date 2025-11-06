@@ -58,10 +58,11 @@ module "naming_staging" {
 output "dev_environment" {
   description = "Development environment resource names"
   value = {
+    subscription_name  = module.naming_dev_eus.subscription_name
     resource_group     = module.naming_dev_eus.resource_group
     virtual_network    = module.naming_dev_eus.virtual_network
     aks_cluster        = module.naming_dev_eus.aks_cluster
-    key_vault          = module.naming_dev_eus.key_vault
+    key_vault          = "${module.naming_dev_eus.key_vault}-01"
     storage_account    = module.naming_dev_eus.storage_account
     sql_server         = module.naming_dev_eus.sql_server
     container_registry = module.naming_dev_eus.container_registry
