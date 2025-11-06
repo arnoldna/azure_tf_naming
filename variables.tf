@@ -19,11 +19,11 @@ variable "prefix" {
 }
 
 variable "environment" {
-  description = "Environment name (e.g., dev, test, staging, prod)"
+  description = "Environment name both long and short versions(e.g., prod(p), non-prod(np), dev(d), test(t), stage(s))"
   type        = string
-  default     = ""
+  default     = "d"
   validation {
-    condition     = can(regex("^[a-z0-9]*$", var.environment))
+    condition     = contains(["p", "prod", "np", "non-prod", "d", "dev", "t", "test", "s", "stage"], var.environment)
     error_message = "Environment must contain only lowercase letters and numbers."
   }
 }
