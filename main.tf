@@ -371,4 +371,32 @@ locals {
       0, 50
     ))
   }
+
+  # VM-specific naming format
+  # Format: {cloud_acronym}{location}{os}{app_name}{env}{number}
+  # Example: azcus2lautopd01
+  vm_cloud_acronym_short = var.cloud_acronym == "azc" ? "az" : var.cloud_acronym == "azg" ? "ag" : substr(var.cloud_acronym, 0, 2)
+
+  vm_environment_short = length(var.environment) == 1 ? var.environment : (
+    var.environment == "prod" ? "p" :
+    var.environment == "dev" ? "d" :
+    var.environment == "test" ? "t" :
+    var.environment == "non-prod" ? "n" :
+    var.environment == "stage" ? "s" :
+    substr(var.environment, 0, 1)
+  )
+
+  # Custom VM hostname following your specific format
+  vm_hostname = var.vm_application_name != "" && var.vm_os_type != "" ? lower(
+    format("%s%s%s%s%s%02d",
+      local.vm_cloud_acronym_short,
+      local.location_abbr,
+      lower(var.vm_os_type),
+      var.vm_application_name,
+      local.vm_environment_short,
+      var.vm_number
+    )
+  ) : ""
+
+  # ...existing names generation code...
 }

@@ -6,7 +6,7 @@ This module implements the [Microsoft Azure Cloud Adoption Framework](https://le
 
 The module generates resource names using the following pattern:
 
-```
+```txt
 <cloud_acronym>-<abbreviation>-<prefix>-<workload>-<environment>-<location>
 ```
 
@@ -158,11 +158,161 @@ resource "azurerm_cosmosdb_account" "example" {
 }
 ```
 
+### Virtual Machine Hostnames
+
+For organizations requiring a specific VM hostname format, the module provides specialized VM naming that differs from the standard resource naming pattern.
+
+**VM Hostname Format:**
+
+```txt
+<cloud_short><location><os><app_name><env><number>
+```
+
+**Components:**
+
+- **cloud_short**: 2-character cloud identifier
+  - `az` for Azure Commercial (from `azc`)
+  - `ag` for Azure Government (from `azg`)
+- **location**: 3-4 character region abbreviation (requires `use_azure_region_abbr = true`)
+  - Examples: `cus`, `eus2`, `wus2`, `ugv`, `ugt`
+- **os**: 1-character OS type
+  - `l` for Linux
+  - `w` for Windows
+- **app_name**: 3-6 character application identifier
+  - Examples: `nds`, `autop`, `automg`, `vem`, `airway`
+- **env**: 1-character environment identifier
+  - `p` - Production
+  - `d` - Development
+  - `t` - Test
+  - `n` - Non-Production (shared servers)
+  - `s` - Staging
+- **number**: 2-digit numeric identifier (01-99)
+
+**Example:**
+
+```hcl
+# Windows VM for NDS application in Production
+module "vm_naming" {
+  source = "./azure_tf_naming"
+
+  cloud_acronym         = "azc"
+  environment           = "p"
+  location              = "centralus"
+  use_azure_region_abbr = true
+
+  vm_os_type          = "w"
+  vm_application_name = "nds"
+  vm_number           = 1
+}
+
+resource "azurerm_windows_virtual_machine" "nds" {
+  name                = module.vm_naming.vm_hostname  # Output: azcuswndsp01
+  resource_group_name = azurerm_resource_group.example.name
+  location            = azurerm_resource_group.example.location
+  size                = "Standard_DS2_v2"
+  admin_username      = "adminuser"
+
+  network_interface_ids = [
+    azurerm_network_interface.example.id,
+  ]
+
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Premium_LRS"
+  }
+
+  source_image_reference {
+    publisher = "MicrosoftWindowsServer"
+    offer     = "WindowsServer"
+    sku       = "2022-Datacenter"
+    version   = "latest"
+  }
+}
+```
+
+**More Examples:**
+
+```hcl
+# Linux VM for Autopilot in Development
+module "vm_autopilot_dev" {
+  source = "./azure_tf_naming"
+
+  cloud_acronym         = "azc"
+  environment           = "dev"
+  location              = "eastus2"
+  use_azure_region_abbr = true
+  
+  vm_os_type          = "l"
+  vm_application_name = "autop"
+  vm_number           = 5
+}
+# Output: azeus2lautopd05
+
+# Windows VM for VEM in Test (Azure Government)
+module "vm_gov_vem" {
+  source = "./azure_tf_naming"
+
+  cloud_acronym         = "azg"
+  environment           = "t"
+  location              = "usgovvirginia"
+  use_azure_region_abbr = true
+  
+  vm_os_type          = "w"
+  vm_application_name = "vem"
+  vm_number           = 12
+}
+# Output: agugvwvemt12
+
+# Linux VM for Airway in Non-Prod
+module "vm_airway_nonprod" {
+  source = "./azure_tf_naming"
+
+  cloud_acronym         = "azc"
+  environment           = "n"
+  location              = "westus2"
+  use_azure_region_abbr = true
+
+  vm_os_type          = "l"
+  vm_application_name = "airway"
+  vm_number           = 3
+}
+# Output: azwus2lairwayn03
+```
+
+**VM Hostname Output Details:**
+
+The module provides two VM-related outputs:
+
+1. **`vm_hostname`**: The complete hostname string (e.g., `azeus2wndsp01`)
+2. **`vm_details`**: A map containing the breakdown of all components:
+
+   ```hcl
+   {
+     hostname            = "azeus2wndsp01"
+     cloud_acronym_short = "az"
+     location            = "eus2"
+     os_type             = "w"
+     application_name    = "nds"
+     environment_short   = "p"
+     number              = 1
+   }
+   ```
+
+**Important Notes:**
+
+- VM hostnames are always lowercase
+- The `use_azure_region_abbr` should be set to `true` for proper region abbreviations
+- Both `vm_os_type` and `vm_application_name` must be provided to generate a VM hostname
+- If VM parameters are not provided, `vm_hostname` will be an empty string
+- The environment input accepts both short (`p`, `d`, `t`) and long (`prod`, `dev`, `test`) forms
+- Numbers are zero-padded to 2 digits (1 becomes 01, 25 stays 25)
+
 ## Supported Resource Types
 
 The module supports 200+ Azure resource types organized by category:
 
 ### AI + Machine Learning
+
 - AI Search (`ai_search`) - `srch`
 - AI Services (`ai_services`) - `ais`
 - AI Foundry Account (`ai_foundry_account`) - `aif`
@@ -180,6 +330,7 @@ The module supports 200+ Azure resource types organized by category:
 - And more...
 
 ### Analytics and IoT
+
 - Data Factory (`data_factory`) - `adf`
 - Synapse Workspace (`synapse_workspace`) - `synw`
 - Synapse SQL Pool (`synapse_sql_pool`) - `syndp`
@@ -195,6 +346,7 @@ The module supports 200+ Azure resource types organized by category:
 - And 30+ more...
 
 ### Compute and Web
+
 - Virtual Machine (`virtual_machine`) - `vm`
 - Virtual Machine Scale Set (`virtual_machine_scale_set`) - `vmss`
 - App Service Plan (`app_service_plan`) - `asp`
@@ -208,6 +360,7 @@ The module supports 200+ Azure resource types organized by category:
 - And 30+ more...
 
 ### Containers
+
 - AKS Cluster (`aks_cluster`) - `aks`
 - AKS System Node Pool (`aks_system_node_pool`) - `npsystem`
 - AKS User Node Pool (`aks_user_node_pool`) - `np`
@@ -219,6 +372,7 @@ The module supports 200+ Azure resource types organized by category:
 - And more...
 
 ### Databases
+
 - SQL Server (`sql_server`) - `sql`
 - SQL Database (`sql_database`) - `sqldb`
 - SQL Elastic Pool (`sql_elastic_pool`) - `sqlep`
@@ -234,6 +388,7 @@ The module supports 200+ Azure resource types organized by category:
 - And more...
 
 ### Networking
+
 - Virtual Network (`virtual_network`) - `vnet`
 - Subnet (`subnet`) - `snet`
 - Network Security Group (`network_security_group`) - `nsg`
@@ -254,6 +409,7 @@ The module supports 200+ Azure resource types organized by category:
 - And 50+ more...
 
 ### Security
+
 - Key Vault (`key_vault`) - `kv`
 - Key Vault Managed HSM (`key_vault_managed_hsm`) - `kvmhsm`
 - Managed Identity (`managed_identity`) - `id`
@@ -263,6 +419,7 @@ The module supports 200+ Azure resource types organized by category:
 - And more...
 
 ### Storage
+
 - Storage Account (`storage_account`) - `st`
 - File Share (`file_share`) - `share`
 - Backup Vault (`backup_vault`) - `bvault`
@@ -271,6 +428,7 @@ The module supports 200+ Azure resource types organized by category:
 - And more...
 
 ### Management and Governance
+
 - Resource Group (`resource_group`) - `rg`
 - Log Analytics Workspace (`log_analytics_workspace`) - `log`
 - Application Insights (`application_insights`) - `appi`
@@ -282,6 +440,7 @@ The module supports 200+ Azure resource types organized by category:
 - And 15+ more...
 
 ### Integration
+
 - API Management (`api_management`) - `apim`
 - Service Bus Namespace (`service_bus_namespace`) - `sbns`
 - Service Bus Queue (`service_bus_queue`) - `sbq`

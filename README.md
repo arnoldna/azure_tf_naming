@@ -4,14 +4,14 @@ A Terraform module for generating consistent Azure resource names following [Mic
 
 ## Features
 
-✅ **200+ Azure resource types** with official Microsoft abbreviations  
-✅ **Flexible naming pattern** - use only the components you need  
-✅ **Cloud acronym support** - distinguish Azure Commercial (`azc`) vs Government (`azg`)  
-✅ **Region abbreviation support** - optional short codes for Azure regions  
-✅ **Character limit handling** - automatic clean names for Storage Accounts, Key Vaults, etc.  
-✅ **Azure Government support** - includes US Gov and DoD regions  
-✅ **Input validation** - ensures lowercase alphanumeric values  
-✅ **Zero dependencies** - pure Terraform with no providers required  
+✅ **200+ Azure resource types** with official Microsoft abbreviations
+✅ **Flexible naming pattern** - use only the components you need
+✅ **Cloud acronym support** - distinguish Azure Commercial (`azc`) vs Government (`azg`)
+✅ **Region abbreviation support** - optional short codes for Azure regions
+✅ **Character limit handling** - automatic clean names for Storage Accounts, Key Vaults, etc.
+✅ **Azure Government support** - includes US Gov and DoD regions
+✅ **Input validation** - ensures lowercase alphanumeric values
+✅ **Zero dependencies** - pure Terraform with no providers required
 
 ## Quick Start
 
@@ -42,7 +42,7 @@ resource "azurerm_key_vault" "example" {
 
 ## Naming Pattern
 
-```
+```txt
 <cloud_acronym>-<abbreviation>-<prefix>-<workload>-<environment>-<location>
 ```
 
@@ -187,6 +187,55 @@ resource "azurerm_key_vault" "example" {
 }
 ```
 
+## Virtual Machine Hostname Support
+
+In addition to standard Azure resource naming, this module provides a specialized VM hostname format for organizations that require custom naming conventions for virtual machines:
+
+```hcl
+module "vm_naming" {
+  source = "./azure_tf_naming"
+
+  cloud_acronym         = "azc"
+  environment           = "prod"
+  location              = "eastus2"
+  use_azure_region_abbr = true
+
+  # VM-specific parameters
+  vm_os_type          = "w"      # 'w' for Windows, 'l' for Linux
+  vm_application_name = "nds"    # 3-6 character application name
+  vm_number           = 1        # 1-99
+}
+
+# Output: azeus2wndsp01
+# Format: {cloud}{location}{os}{app}{env}{number}
+resource "azurerm_windows_virtual_machine" "example" {
+  name                = module.vm_naming.vm_hostname
+  resource_group_name = azurerm_resource_group.example.name
+  location            = azurerm_resource_group.example.location
+  size                = "Standard_DS2_v2"
+  # ... other configuration
+}
+```
+
+### VM Hostname Format
+
+```txt
+<cloud_short><location><os><app_name><env><number>
+```
+
+- **cloud_short**: `az` (Azure Commercial) or `ag` (Azure Government)
+- **location**: 3-4 character region code (e.g., `cus`, `eus2`, `ugv`)
+- **os**: `l` (Linux) or `w` (Windows)
+- **app_name**: 3-6 character application identifier
+- **env**: `p` (Production), `d` (Development), `t` (Test), `n` (Non-Prod)
+- **number**: 01-99 (zero-padded)
+
+**Examples:**
+
+- `azcuswndsp01` - Azure Commercial, Central US, Windows, NDS app, Production, #1
+- `azeus2lautopd05` - Azure Commercial, East US 2, Linux, Autopilot, Development, #5
+- `agugvlairwayt12` - Azure Government, Gov Virginia, Linux, Airway, Test, #12
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -198,6 +247,9 @@ resource "azurerm_key_vault" "example" {
 | location | Azure region location code | `string` | `""` | no |
 | delimiter | Delimiter between name components | `string` | `"-"` | no |
 | use_azure_region_abbr | Use abbreviated region names | `bool` | `false` | no |
+| vm_os_type | Operating system for VM hostname: 'l' for Linux or 'w' for Windows | `string` | `""` | no |
+| vm_application_name | Application name for VM hostname (3-6 characters) | `string` | `""` | no |
+| vm_number | Numeric identifier for VM hostname (1-99) | `number` | `1` | no |
 
 ## Key Outputs
 
@@ -263,3 +315,10 @@ Contributions are welcome! Please open an issue or pull request.
 ## License
 
 See [LICENSE](LICENSE) for details.
+
+## Virtual Machine Hostnames
+
+| Output | Description | Example |
+|--------|-------------|---------|
+| `vm_hostname` | Custom VM hostname | `azeus2wndsp01` |
+| `vm_details` | VM naming details breakdown | `{ hostname = "azeus2wndsp01", ... }` |

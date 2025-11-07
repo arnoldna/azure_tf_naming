@@ -12,7 +12,6 @@ module "naming_dev_eus" {
   source = "../.."
 
   cloud_acronym         = "azc"
-  prefix                = "acme"
   workload              = "ecommerce"
   environment           = "dev"
   location              = "eastus"
@@ -26,7 +25,7 @@ module "naming_prod_eus" {
   cloud_acronym         = "azc"
   prefix                = "acme"
   workload              = "ecommerce"
-  environment           = "prod"
+  environment           = "p"
   location              = "eastus"
   use_azure_region_abbr = true
 }
@@ -50,8 +49,55 @@ module "naming_staging" {
   cloud_acronym = "azc"
   prefix        = "acme"
   workload      = "ecommerce"
-  environment   = "staging"
+  environment   = "stage"
   location      = "centralus"
+}
+
+# Example: Linux VM for autopilot application in development
+module "vm_linux_autopilot_dev" {
+  source = "../.."
+
+  cloud_acronym         = "azc"
+  workload              = "ecommerce"
+  environment           = "dev"
+  location              = "eastus2"
+  use_azure_region_abbr = true
+
+  # VM-specific settings
+  vm_os_type          = "l"
+  vm_application_name = "autop"
+  vm_number           = 1
+}
+
+# Example: Windows VM for NDS application in production
+module "vm_windows_nds_prod" {
+  source = "../.."
+
+  cloud_acronym         = "azc"
+  workload              = "ecommerce"
+  environment           = "p"
+  location              = "centralus"
+  use_azure_region_abbr = true
+
+  # VM-specific settings
+  vm_os_type          = "w"
+  vm_application_name = "nds"
+  vm_number           = 1
+}
+
+# Example: Azure Government VM
+module "vm_gov_airway" {
+  source = "../.."
+
+  cloud_acronym         = "azg"
+  environment           = "d"
+  location              = "usgovvirginia"
+  use_azure_region_abbr = true
+
+  # VM-specific settings
+  vm_os_type          = "l"
+  vm_application_name = "airway"
+  vm_number           = 2
 }
 
 # Output examples for each environment
@@ -112,4 +158,13 @@ output "staging_environment" {
 output "all_resource_types" {
   description = "Map showing all available resource type names for dev environment"
   value       = module.naming_dev_eus.names
+}
+
+output "vm_hostnames" {
+  description = "Generated VM hostnames"
+  value = {
+    linux_autopilot_dev = module.vm_linux_autopilot_dev.vm_hostname # azeus2lautopd01
+    windows_nds_prod    = module.vm_windows_nds_prod.vm_hostname    # azcuswndsp01
+    gov_airway_dev      = module.vm_gov_airway.vm_hostname          # agugvlairwayd02
+  }
 }

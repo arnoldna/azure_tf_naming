@@ -291,3 +291,21 @@ output "logic_app" {
   description = "Name for Logic App"
   value       = local.names.logic_app
 }
+
+output "vm_hostname" {
+  description = "Custom virtual machine hostname following cloud_acronym + location + os + app_name + environment + number format"
+  value       = local.vm_hostname
+}
+
+output "vm_details" {
+  description = "Virtual machine naming details"
+  value = {
+    hostname            = local.vm_hostname
+    cloud_acronym_short = local.vm_cloud_acronym_short
+    location            = local.location_abbr
+    os_type             = var.vm_os_type
+    application_name    = var.vm_application_name
+    environment_short   = local.vm_environment_short
+    number              = var.vm_number
+  }
+}

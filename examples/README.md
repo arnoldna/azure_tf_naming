@@ -75,21 +75,25 @@ This example demonstrates:
 ## Running the Examples
 
 1. Navigate to the example directory:
+
    ```bash
    cd examples/basic  # or examples/advanced
    ```
 
 2. Initialize Terraform:
+
    ```bash
    terraform init
    ```
 
 3. View the generated names:
+
    ```bash
    terraform plan
    ```
 
 4. (Optional) Apply to save outputs:
+
    ```bash
    terraform apply
    ```
@@ -98,7 +102,7 @@ This example demonstrates:
 
 When you run `terraform plan` in the basic example, you'll see output like:
 
-```
+```txt
 example_names = {
   resource_group          = "rg-contoso-webapp-dev-eastus-001"
   virtual_network         = "vnet-contoso-webapp-dev-eastus-001"
