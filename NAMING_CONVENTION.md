@@ -2,6 +2,8 @@
 
 This module implements the [Microsoft Azure Cloud Adoption Framework](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations) naming conventions for Azure resources.
 
+> **Reference:** For detailed information on Azure resource naming rules and character limits, see [Naming rules and restrictions for Azure resources](https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/resource-name-rules?source=recommendations).
+
 ## Naming Pattern
 
 The module generates resource names using the following pattern:

@@ -2,6 +2,8 @@
 
 Many Azure resources have strict naming requirements that differ from the standard naming convention.
 
+> **Official Documentation:** For complete details on Azure resource naming rules and character limits, see Microsoft's [Naming rules and restrictions for Azure resources](https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/resource-name-rules?source=recommendations).
+
 ## Resources with Special Requirements
 
 ### Storage Account

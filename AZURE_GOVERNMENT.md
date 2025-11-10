@@ -2,6 +2,8 @@
 
 This module includes full support for Azure Government regions with cloud-specific naming through the `cloud_acronym` variable.
 
+> **Reference:** For Azure Government-specific naming rules, see [Naming rules and restrictions for Azure resources](https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/resource-name-rules?source=recommendations).
+
 ## Supported Cloud Environments
 
 ### Azure Public Cloud
