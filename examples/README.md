@@ -104,15 +104,21 @@ When you run `terraform plan` in the basic example, you'll see output like:
 
 ```txt
 example_names = {
-  resource_group          = "rg-contoso-webapp-dev-eastus-001"
-  virtual_network         = "vnet-contoso-webapp-dev-eastus-001"
-  subnet                  = "snet-contoso-webapp-dev-eastus-001"
-  storage_account         = "st-contoso-webapp-dev-eastus-001"
-  key_vault               = "kv-contoso-webapp-dev-eastus-001"
-  app_service_plan        = "asp-contoso-webapp-dev-eastus-001"
-  web_app                 = "app-contoso-webapp-dev-eastus-001"
-  ...
+  application_insights    = "azc-appi-contoso-webapp-dev-eastus"
+  app_service_plan        = "azc-asp-contoso-webapp-dev-eastus"
+  key_vault               = "azc-kv-contoso-webap-"
+  log_analytics_workspace = "azc-log-contoso-webapp-dev-eastus"
+  network_security_group  = "azc-nsg-contoso-webapp-dev-eastus"
+  resource_group          = "azc-rg-contoso-webapp-dev-eastus"
+  sql_database            = "azc-sqldb-contoso-webapp-dev-eastus"
+  sql_server              = "azc-sql-contoso-webapp-dev-eastus"
+  storage_account         = "azcstcontosowebappdevea"
+  subnet                  = "azc-snet-contoso-webapp-dev-eastus"
+  virtual_network         = "azc-vnet-contoso-webapp-dev-eastus"
+  web_app                 = "azc-app-contoso-webapp-dev-eastus"
 }
+
+base_name = "contoso-webapp-dev-eastus"
 ```
 
 ## Notes

@@ -523,10 +523,39 @@ When `use_azure_region_abbr = true`, the following region abbreviations are used
 | cloud_acronym | Cloud acronym: 'azc' for Azure Commercial or 'azg' for Azure Government | `string` | `"azc"` | no |
 | prefix | Prefix for resource names (e.g., company name) | `string` | `""` | no |
 | workload | Workload or application name | `string` | `""` | no |
-| environment | Environment name (e.g., dev, test, prod) | `string` | `""` | no |
+| environment | Environment name: supports both long and short forms (prod/p, dev/d, test/t, stage/s, non-prod/np) | `string` | `"d"` | no |
 | location | Azure region location code | `string` | `""` | no |
 | delimiter | Delimiter between name components | `string` | `"-"` | no |
 | use_azure_region_abbr | Use abbreviated region names | `bool` | `false` | no |
+
+### Environment Validation
+
+The `environment` variable accepts both long and short forms for convenience:
+
+| Short Form | Long Form | Use Case |
+|------------|-----------|----------|
+| `p` | `prod` | Production environments |
+| `d` | `dev` | Development environments |
+| `t` | `test` | Test/QA environments |
+| `s` | `stage` | Staging environments |
+| `np` | `non-prod` | Non-production/shared environments |
+
+Both forms are valid and will work identically in name generation. Choose the form that best fits your naming length requirements.
+
+**Example:**
+
+```hcl
+# These produce identical results
+module "naming_short" {
+  source      = "./azure_tf_naming"
+  environment = "p"
+}
+
+module "naming_long" {
+  source      = "./azure_tf_naming"
+  environment = "prod"
+}
+```
 
 ## Outputs
 

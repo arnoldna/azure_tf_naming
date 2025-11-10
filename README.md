@@ -88,9 +88,32 @@ module "naming" {
 
   workload    = "api"
   environment = "dev"
+  location    = "eastus"  # Optional - omit if you don't want location in the name
 }
 
-# Output: azc-app-api-dev (cloud_acronym defaults to "azc")
+# Output: azc-app-api-dev-eastus
+# Note: cloud_acronym defaults to "azc", location is included when specified
+resource "azurerm_linux_web_app" "example" {
+  name                = module.naming.web_app
+  resource_group_name = azurerm_resource_group.example.name
+  location            = azurerm_resource_group.example.location
+  service_plan_id     = azurerm_service_plan.example.id
+  site_config {}
+}
+```
+
+### Truly Minimal (Without Location)
+
+```hcl
+module "naming" {
+  source = "./azure_tf_naming"
+
+  workload    = "api"
+  environment = "dev"
+}
+
+# Output: azc-app-api-dev (no location)
+# All parameters are optional - only include what you need in your naming pattern
 resource "azurerm_linux_web_app" "example" {
   name                = module.naming.web_app
   resource_group_name = azurerm_resource_group.example.name
@@ -243,7 +266,7 @@ resource "azurerm_windows_virtual_machine" "example" {
 | cloud_acronym | Cloud acronym: 'azc' for Azure Commercial or 'azg' for Azure Government | `string` | `"azc"` | no |
 | prefix | Prefix for resource names (e.g., company name) | `string` | `""` | no |
 | workload | Workload or application name | `string` | `""` | no |
-| environment | Environment name (e.g., dev, test, prod) | `string` | `""` | no |
+| environment | Environment name: supports both long and short forms (prod/p, dev/d, test/t, stage/s, non-prod/np) | `string` | `"d"` | no |
 | location | Azure region location code | `string` | `""` | no |
 | delimiter | Delimiter between name components | `string` | `"-"` | no |
 | use_azure_region_abbr | Use abbreviated region names | `bool` | `false` | no |
