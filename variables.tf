@@ -79,13 +79,3 @@ variable "vm_application_name" {
     error_message = "VM application name must be 3-6 lowercase alphanumeric characters."
   }
 }
-
-variable "vm_number" {
-  description = "Numeric identifier for virtual machine (1-99)"
-  type        = number
-  default     = 1
-  validation {
-    condition     = var.vm_number >= 1 && var.vm_number <= 99
-    error_message = "VM number must be between 1 and 99."
-  }
-}

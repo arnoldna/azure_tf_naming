@@ -306,6 +306,10 @@ output "vm_details" {
     os_type             = var.vm_os_type
     application_name    = var.vm_application_name
     environment_short   = local.vm_environment_short
-    number              = var.vm_number
   }
+}
+
+output "location" {
+  description = "Location name used in naming"
+  value       = var.location
 }

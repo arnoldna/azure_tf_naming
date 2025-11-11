@@ -204,7 +204,6 @@ module "vm_naming" {
 
   vm_os_type          = "w"
   vm_application_name = "nds"
-  vm_number           = 1
 }
 
 resource "azurerm_windows_virtual_machine" "nds" {
@@ -243,10 +242,9 @@ module "vm_autopilot_dev" {
   environment           = "dev"
   location              = "eastus2"
   use_azure_region_abbr = true
-  
+
   vm_os_type          = "l"
   vm_application_name = "autop"
-  vm_number           = 5
 }
 # Output: azeus2lautopd05
 
@@ -261,7 +259,7 @@ module "vm_gov_vem" {
   
   vm_os_type          = "w"
   vm_application_name = "vem"
-  vm_number           = 12
+
 }
 # Output: agugvwvemt12
 
@@ -276,7 +274,7 @@ module "vm_airway_nonprod" {
 
   vm_os_type          = "l"
   vm_application_name = "airway"
-  vm_number           = 3
+
 }
 # Output: azwus2lairwayn03
 ```
@@ -296,7 +294,6 @@ The module provides two VM-related outputs:
      os_type             = "w"
      application_name    = "nds"
      environment_short   = "p"
-     number              = 1
    }
    ```
 
@@ -307,7 +304,6 @@ The module provides two VM-related outputs:
 - Both `vm_os_type` and `vm_application_name` must be provided to generate a VM hostname
 - If VM parameters are not provided, `vm_hostname` will be an empty string
 - The environment input accepts both short (`p`, `d`, `t`) and long (`prod`, `dev`, `test`) forms
-- Numbers are zero-padded to 2 digits (1 becomes 01, 25 stays 25)
 
 ## Supported Resource Types
 

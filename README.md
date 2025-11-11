@@ -226,13 +226,39 @@ module "vm_naming" {
   # VM-specific parameters
   vm_os_type          = "w"      # 'w' for Windows, 'l' for Linux
   vm_application_name = "nds"    # 3-6 character application name
-  vm_number           = 1        # 1-99
 }
 
 # Output: azeus2wndsp01
 # Format: {cloud}{location}{os}{app}{env}{number}
 resource "azurerm_windows_virtual_machine" "example" {
-  name                = module.vm_naming.vm_hostname
+  name                = module.vm_naming.virtual_machine  //Name of the virtual machine resource
+  computer_name       = module.vm_naming.vm_hostname  //Hostname of the deployed virtual machine
+  resource_group_name = azurerm_resource_group.example.name
+  location            = azurerm_resource_group.example.location
+  size                = "Standard_DS2_v2"
+  # ... other configuration
+}
+```
+
+Example multiple VM deployment
+```hcl
+module "vm_naming" {
+  source = "./azure_tf_naming"
+
+  cloud_acronym         = "azc"
+  environment           = "prod"
+  location              = "eastus2"
+  use_azure_region_abbr = true
+
+  # VM-specific parameters
+  vm_os_type          = "w"      # 'w' for Windows, 'l' for Linux
+  vm_application_name = "xyz"    # 3-6 character application name
+}
+
+resource "azurerm_windows_virtual_machine" "example" {
+  count = 3
+  name                = "${module.vm_naming.virtual_machine}${count.index}"  //Name of the virtual machine resource
+  computer_name       = "${module.vm_naming.vm_hostname}${count.index}"  //Hostname of the deployed virtual machine
   resource_group_name = azurerm_resource_group.example.name
   location            = azurerm_resource_group.example.location
   size                = "Standard_DS2_v2"
@@ -251,7 +277,6 @@ resource "azurerm_windows_virtual_machine" "example" {
 - **os**: `l` (Linux) or `w` (Windows)
 - **app_name**: 3-6 character application identifier
 - **env**: `p` (Production), `d` (Development), `t` (Test), `n` (Non-Prod)
-- **number**: 01-99 (zero-padded)
 
 **Examples:**
 
@@ -272,7 +297,6 @@ resource "azurerm_windows_virtual_machine" "example" {
 | use_azure_region_abbr | Use abbreviated region names | `bool` | `false` | no |
 | vm_os_type | Operating system for VM hostname: 'l' for Linux or 'w' for Windows | `string` | `""` | no |
 | vm_application_name | Application name for VM hostname (3-6 characters) | `string` | `""` | no |
-| vm_number | Numeric identifier for VM hostname (1-99) | `number` | `1` | no |
 
 ## Key Outputs
 
@@ -336,13 +360,13 @@ Contributions are welcome! Please open an issue or pull request.
 - [Azure Naming Rules and Restrictions](https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/resource-name-rules)
 - [Azure Resource Name Rules](https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/resource-name-rules?source=recommendations)
 
-## License
-
-See [LICENSE](LICENSE) for details.
-
 ## Virtual Machine Hostnames
 
 | Output | Description | Example |
 |--------|-------------|---------|
 | `vm_hostname` | Custom VM hostname | `azeus2wndsp01` |
 | `vm_details` | VM naming details breakdown | `{ hostname = "azeus2wndsp01", ... }` |
+
+## License
+
+See [LICENSE](LICENSE) for details.

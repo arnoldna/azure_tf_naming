@@ -818,6 +818,8 @@ locals {
       replace(join(var.delimiter, compact([var.cloud_acronym, local.abbreviations.virtual_desktop_workspace, local.full_base_name])), "/[^a-zA-Z0-9-]/", ""),
       0, 64
     ))
+
+    location_abbr = lower(var.location)
   }
 
   # VM-specific naming format
@@ -842,7 +844,6 @@ locals {
       lower(var.vm_os_type),
       var.vm_application_name,
       local.vm_environment_short,
-      var.vm_number
     )
   ) : ""
 }

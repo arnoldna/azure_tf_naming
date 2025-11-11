@@ -66,7 +66,6 @@ module "vm_linux_autopilot_dev" {
   # VM-specific settings
   vm_os_type          = "l"
   vm_application_name = "autop"
-  vm_number           = 1
 }
 
 # Example: Windows VM for NDS application in production
@@ -82,7 +81,6 @@ module "vm_windows_nds_prod" {
   # VM-specific settings
   vm_os_type          = "w"
   vm_application_name = "nds"
-  vm_number           = 1
 }
 
 # Example: Azure Government VM
@@ -97,7 +95,6 @@ module "vm_gov_airway" {
   # VM-specific settings
   vm_os_type          = "l"
   vm_application_name = "airway"
-  vm_number           = 2
 }
 
 # Output examples for each environment
@@ -112,6 +109,19 @@ output "dev_environment" {
     storage_account    = module.naming_dev_eus.storage_account
     sql_server         = module.naming_dev_eus.sql_server
     container_registry = module.naming_dev_eus.container_registry
+  }
+}
+
+output "locations" {
+  description = "Locations used in the examples"
+  value = {
+    dev_eus         = module.naming_dev_eus.location
+    prod_eus        = module.naming_prod_eus.location
+    prod_wus2       = module.naming_prod_wus2.location
+    staging         = module.naming_staging.location
+    linux_vm_dev    = module.vm_linux_autopilot_dev.location
+    windows_vm_prod = module.vm_windows_nds_prod.location
+    gov_vm          = module.vm_gov_airway.location
   }
 }
 
