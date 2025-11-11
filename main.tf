@@ -838,7 +838,7 @@ locals {
 
   # Custom VM hostname following your specific format
   vm_hostname = var.vm_application_name != "" && var.vm_os_type != "" ? lower(
-    format("%s%s%s%s%s%02d",
+    format("%s%s%s%s%s",
       local.vm_cloud_acronym_short,
       local.location_abbr,
       lower(var.vm_os_type),

@@ -241,6 +241,7 @@ resource "azurerm_windows_virtual_machine" "example" {
 ```
 
 Example multiple VM deployment
+
 ```hcl
 module "vm_naming" {
   source = "./azure_tf_naming"
