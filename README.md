@@ -62,6 +62,7 @@ resource "azurerm_key_vault" "example" {
 - **[CHARACTER_LIMITS.md](CHARACTER_LIMITS.md)** - Handling Azure resource character limitations
 - **[AZURE_GOVERNMENT.md](AZURE_GOVERNMENT.md)** - Azure Government and DoD regions guide
 - **[Microsoft CAF - Resource Abbreviations](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations)** - Official abbreviation reference
+- **[Microsoft Azure Resource Naming Rules and Restrictions](https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/resource-name-rules)**
 
 ## Supported Resource Categories
 
