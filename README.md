@@ -318,15 +318,127 @@ The module provides 200+ resource name outputs. Here are the most commonly used:
 
 ### Resources with Strict Naming Requirements
 
-These resources automatically handle character limitations:
+These resources automatically handle character limitations. All outputs use the `names_clean` local variable and are automatically truncated/sanitized:
 
-| Output | Description | Max Length | Hyphens? | Example |
-|--------|-------------|-----------|----------|---------|
-| `storage_account` | Storage Account | 24 chars | ❌ No | `azcstcontosoapprodeas` |
-| `container_registry` | Container Registry | 50 chars | ❌ No | `azccrcontosoapprodeastus` |
-| `key_vault` | Key Vault | 24 chars | ✅ Yes | `azc-kv-contoso-app-pro` |
+#### Most Restrictive (No Hyphens Allowed)
 
-See [outputs.tf](outputs.tf) for the complete list and [CHARACTER_LIMITS.md](CHARACTER_LIMITS.md) for detailed guidance.
+| Output | Max Length | Allowed Characters | Example |
+|--------|-----------|-------------------|---------|
+| `storage_account` | 24 chars | Lowercase letters and numbers only | `azcstcontosoapprodeas` |
+| `batch_account` | 24 chars | Lowercase letters and numbers only | `azcbacontosoapprodeas` |
+| `analysis_services` | 63 chars | Lowercase letters and numbers only | `azcastcontosoapprodeastus` |
+| `container_registry` | 50 chars | Alphanumeric only | `azccrcontosoapprodeastus` |
+
+#### Key Vault Family (24 Character Limit)
+
+| Output | Max Length | Allowed Characters | Example |
+|--------|-----------|-------------------|---------|
+| `key_vault` | 24 chars | Alphanumeric and hyphens | `azc-kv-contoso-app-pro` |
+| `key_vault_managed_hsm` | 24 chars | Alphanumeric and hyphens | `azc-kvh-contoso-app-pr` |
+
+#### Web & Compute Resources
+
+| Output | Max Length | Allowed Characters |
+|--------|-----------|-------------------|
+| `app_service_plan` | 40 chars | Alphanumeric and hyphens |
+| `function_app` | 60 chars | Alphanumeric and hyphens |
+| `web_app` | 60 chars | Alphanumeric and hyphens |
+| `static_web_app` | 40 chars | Alphanumeric and hyphens |
+| `virtual_machine` | 64 chars | Alphanumeric and hyphens |
+| `virtual_machine_scale_set` | 64 chars | Alphanumeric, hyphens, and underscores |
+
+#### AI & Machine Learning
+
+| Output | Max Length | Allowed Characters |
+|--------|-----------|-------------------|
+| `ai_search` | 60 chars | Lowercase letters, numbers, and hyphens |
+| `ai_services` | 64 chars | Alphanumeric and hyphens |
+| `machine_learning_workspace` | 33 chars | Alphanumeric and hyphens |
+| `openai_service` | 64 chars | Alphanumeric and hyphens |
+| `bot_service` | 64 chars | Alphanumeric, hyphens, and underscores |
+
+#### Analytics & IoT
+
+| Output | Max Length | Allowed Characters |
+|--------|-----------|-------------------|
+| `databricks_workspace` | 30 chars | Alphanumeric and hyphens |
+| `data_factory` | 63 chars | Alphanumeric and hyphens |
+| `synapse_workspace` | 50 chars | Alphanumeric and hyphens |
+| `event_hub_namespace` | 50 chars | Alphanumeric and hyphens |
+| `event_hub` | 50 chars | Alphanumeric, periods, hyphens, and underscores |
+| `iot_hub` | 50 chars | Alphanumeric and hyphens |
+
+#### Databases
+
+| Output | Max Length | Allowed Characters |
+|--------|-----------|-------------------|
+| `cosmos_db` | 44 chars | Lowercase letters, numbers, and hyphens |
+| `redis_cache` | 63 chars | Alphanumeric and hyphens |
+| `managed_redis` | 63 chars | Alphanumeric and hyphens |
+| `sql_server` | 63 chars | Lowercase letters, numbers, and hyphens |
+| `sql_database` | 128 chars | Alphanumeric, hyphens, and underscores |
+| `sql_managed_instance` | 63 chars | Lowercase letters, numbers, and hyphens |
+| `mysql_database` | 63 chars | Alphanumeric and hyphens |
+| `postgresql_database` | 63 chars | Alphanumeric and hyphens |
+
+#### Containers
+
+| Output | Max Length | Allowed Characters |
+|--------|-----------|-------------------|
+| `aks_cluster` | 63 chars | Alphanumeric, hyphens, and underscores |
+| `container_instance` | 63 chars | Alphanumeric and hyphens |
+| `container_app` | 32 chars | Lowercase letters, numbers, and hyphens |
+| `container_app_environment` | 60 chars | Alphanumeric and hyphens |
+
+#### Integration Services
+
+| Output | Max Length | Allowed Characters |
+|--------|-----------|-------------------|
+| `api_management` | 50 chars | Alphanumeric and hyphens |
+| `service_bus_namespace` | 50 chars | Alphanumeric and hyphens |
+| `service_bus_queue` | 260 chars | Alphanumeric, periods, hyphens, underscores, and forward slashes |
+| `service_bus_topic` | 260 chars | Alphanumeric, periods, hyphens, underscores, and forward slashes |
+| `logic_app` | 80 chars | Alphanumeric, hyphens, underscores, periods, and parentheses |
+
+#### Networking
+
+| Output | Max Length | Allowed Characters |
+|--------|-----------|-------------------|
+| `virtual_network` | 64 chars | Alphanumeric, hyphens, underscores, and periods |
+| `subnet` | 80 chars | Alphanumeric, hyphens, underscores, and periods |
+| `network_security_group` | 80 chars | Alphanumeric, hyphens, underscores, and periods |
+| `public_ip` | 80 chars | Alphanumeric, hyphens, underscores, and periods |
+| `load_balancer_internal` | 80 chars | Alphanumeric, hyphens, underscores, and periods |
+| `application_gateway` | 80 chars | Alphanumeric, hyphens, and underscores |
+| `firewall` | 80 chars | Alphanumeric, hyphens, and underscores |
+| `vpn_gateway` | 80 chars | Alphanumeric, hyphens, and underscores |
+| `front_door_profile` | 64 chars | Alphanumeric and hyphens |
+
+#### Storage
+
+| Output | Max Length | Allowed Characters |
+|--------|-----------|-------------------|
+| `file_share` | 63 chars | Lowercase letters, numbers, and hyphens |
+| `backup_vault` | 50 chars | Alphanumeric and hyphens |
+| `recovery_services_vault` | 50 chars | Alphanumeric and hyphens |
+
+#### Management & Governance
+
+| Output | Max Length | Allowed Characters |
+|--------|-----------|-------------------|
+| `automation_account` | 50 chars | Alphanumeric and hyphens |
+| `log_analytics_workspace` | 63 chars | Alphanumeric and hyphens |
+| `resource_group` | 90 chars | Alphanumeric, hyphens, underscores, periods, and parentheses |
+
+#### Virtual Desktop Infrastructure
+
+| Output | Max Length | Allowed Characters |
+|--------|-----------|-------------------|
+| `virtual_desktop_host_pool` | 64 chars | Alphanumeric and hyphens |
+| `virtual_desktop_application_group` | 64 chars | Alphanumeric and hyphens |
+| `virtual_desktop_workspace` | 64 chars | Alphanumeric and hyphens |
+
+**Note:** All of these outputs are automatically available from the module and handle truncation/sanitization. For complete details on all 80+ resources with special naming requirements, see [outputs.tf](outputs.tf) and [CHARACTER_LIMITS.md](CHARACTER_LIMITS.md).
 
 ## Examples
 
