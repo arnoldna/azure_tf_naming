@@ -109,6 +109,8 @@ output "dev_environment" {
     storage_account    = module.naming_dev_eus.storage_account
     sql_server         = module.naming_dev_eus.sql_server
     container_registry = module.naming_dev_eus.container_registry
+    managed_disk_data  = module.naming_dev_eus.managed_disk_data
+    managed_disk_os    = module.naming_dev_eus.managed_disk_os
   }
 }
 
