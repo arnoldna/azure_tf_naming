@@ -60,6 +60,16 @@ locals {
   # Determine location component
   location_abbr = var.use_azure_region_abbr && lookup(local.region_abbreviations, var.location, null) != null ? local.region_abbreviations[var.location] : var.location
 
+  # Environment abbreviation for sanitized names
+  environment_short = length(var.environment) == 1 ? var.environment : (
+    var.environment == "prod" ? "p" :
+    var.environment == "dev" ? "d" :
+    var.environment == "test" ? "t" :
+    var.environment == "non-prod" ? "np" :
+    var.environment == "stage" ? "s" :
+    substr(var.environment, 0, 1)
+  )
+
   # Build name components list (filter out empty strings)
   name_components = compact([
     var.prefix,
@@ -74,9 +84,17 @@ locals {
   # Full base name
   full_base_name = local.base_name
 
+  # Sanitized name components with shortened environment
+  sanitized_name_components = compact([
+    var.prefix,
+    var.workload,
+    local.environment_short,
+    local.location_abbr,
+  ])
+
   # Sanitized names for resources with special character requirements
   # Remove delimiters and special characters, lowercase only
-  sanitized_base_name = lower(replace(local.full_base_name, var.delimiter, ""))
+  sanitized_base_name = lower(replace(join(var.delimiter, local.sanitized_name_components), var.delimiter, ""))
 
   # Azure Resource Type Abbreviations (from Microsoft CAF best practices)
   # Reference: https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations
@@ -320,7 +338,7 @@ locals {
   }
 
   # Generate names for all resource types
-  names = {
+  names_base = {
     for type, abbr in local.abbreviations :
     type => join(var.delimiter, compact([var.cloud_acronym, abbr, local.full_base_name]))
   }
@@ -821,6 +839,26 @@ locals {
 
     location_abbr = lower(var.location)
   }
+
+  # Merge base names with clean names for resources that require special formatting
+  # This ensures resources like storage_account, container_registry, etc. use their clean versions
+  names = merge(
+    local.names_base,
+    {
+      # Resources that require alphanumeric only (no delimiters)
+      storage_account      = local.names_clean.storage_account
+      container_registry   = local.names_clean.container_registry
+      batch_account        = local.names_clean.batch_account
+      analysis_services    = local.names_clean.analysis_services
+      cosmos_db            = local.names_clean.cosmos_db
+      sql_server           = local.names_clean.sql_server
+      sql_managed_instance = local.names_clean.sql_managed_instance
+
+      # Resources with specific character restrictions
+      key_vault             = local.names_clean.key_vault
+      key_vault_managed_hsm = local.names_clean.key_vault_managed_hsm
+    }
+  )
 
   # VM-specific naming format
   # Format: {cloud_acronym}{location}{os}{app_name}{env}{number}
